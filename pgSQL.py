@@ -4,7 +4,6 @@
 # Import paczek
 import psycopg2
 import sys
-import os
 from psycopg2 import OperationalError
 
 # Utworzenie klasy NewTable
