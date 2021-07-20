@@ -1,4 +1,4 @@
-# Skrypt pozwala na utworzenie połączenia z bazą danych PostgreSQL i utworzenie na niej tabeli. Następnie dane z pliku csv są przekopiowywane do nowo utworzonej 
+# Skrypt pozwala na nawiązanie połączenia z bazą danych PostgreSQL i zbudowanej na niej tabeli. Następnie dane z pliku csv są przekopiowywane do nowo utworzonej 
 # tabeli.
 
 # Import paczek
