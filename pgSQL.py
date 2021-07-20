@@ -1,60 +1,61 @@
-# First step of project. I build my database in a PostgreSQL tool. 
-# This part of project consist of: establish connection from Python to a 
-# PostgreSQL database thanks of psycopg2 libraries, create new table and 
-# import csv file.
+# Skrypt pozwala na utworzenie połączenia z bazą danych PostgreSQL i utworzenie na niej tabeli. Następnie dane z pliku csv są przekopiowywane do nowo utworzonej 
+# tabeli.
 
-# Import libraries
+# Import paczek
 import psycopg2
 import sys
 import os
 from psycopg2 import OperationalError
 
-
+# Utworzenie klasy NewTable
 class NewTable:
     
       def __init__(self):
           
           self.conn=None
           
+        # Nawiązanie połączenia z bazą danych
           try:
               self.conn=psycopg2.connect("dbname='postgres' user='postgres' password='1234' host='localhost' port='5433'")
               self.cur=self.conn.cursor()
               print("Connection successfully..................")
                            
-          except OperationalError as err:
-              # passing exception to function  
+         # Utworzenie wyjątku w przypadku błędów       
+          except OperationalError as err: 
               show_psycopg2_exception(err)   
-              # set the connection to 'None' in case of error
               self.conn = None 
     
       def create_table(self):
           try:
+            # Usunięcie tabeli w przypadku, gdy istnieje już taka
               self.cur.execute("DROP TABLE IF EXISTS rating_beauty;")
+            # Utworzenie nowej tabeli rating_beauty
               self.cur.execute("CREATE TABLE rating_beauty (UserId CHAR(35) NOT NULL, ProductId TEXT NOT NULL, Rating REAL, Timestamp REAL )")
               self.conn.commit()
               print("Table is created successfully...............")
                           
           except OperationalError as err:
-              # pass exception to function
              show_psycopg2_exception(err)
-             # set the connection to 'None' in case of error
              self.conn = None
           
       def copy_data(self, filepath):
           try:
+            # Otworzenie pliku z podanej ścieżki i odkodowanie go    
               with open(filepath, 'r', encoding="utf8") as f:
-                  # skip the header row
+                  # Pominięcie nagłówków 
                   next(f) 
+                  # Przekopiowanie danych z pliku csv do tabeli rating_beauty
                   self.cur.copy_expert("copy rating_beauty from stdin (format csv) ", f)
               self.conn.commit()
               print("Data inserted to database succesfully.............")
           except (Exception, psycopg2.DatabaseError) as err:
-            # pass exception to function
             show_psycopg2_exception(err)
             
 
           
-# Define a function that handles and parses psycopg2 exceptions
+# Funkcja do zwracania błędów w przypadku połączenia z bazą danych, kod skopiowany z: 
+# https://medium.com/analytics-vidhya/part-4-pandas-dataframe-to-postgresql-using-python-8ffdb0323c09
+
 def show_psycopg2_exception(err):
     # get details about the exception
     err_type, err_obj, traceback = sys.exc_info()    
