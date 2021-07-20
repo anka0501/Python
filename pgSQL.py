@@ -45,7 +45,6 @@ class NewTable:
               with open(filepath, 'r', encoding="utf8") as f:
                   # skip the header row
                   next(f) 
-                  #self.cur.copy_from(f, 'rating_beauty', sep=',')
                   self.cur.copy_expert("copy rating_beauty from stdin (format csv) ", f)
               self.conn.commit()
               print("Data inserted to database succesfully.............")
